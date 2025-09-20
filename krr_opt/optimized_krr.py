@@ -13,7 +13,7 @@ from sklearn.utils.validation import check_is_fitted
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.metrics.pairwise import pairwise_distances, _VALID_METRICS
 
-from numpy.linalg import multi_dot, LinAlgError
+from numpy.linalg import multi_dot
 
 from scipy import linalg
 
@@ -384,14 +384,14 @@ class OptimizedKRR(RegressorMixin, BaseEstimator):
         """
         try:
             result = linalg.solve(matrix, vec, assume_a='pos', overwrite_a=False)
-        except LinAlgError:
+        except linalg.LinAlgError:
             logger.warning(
                 'Eigenvalue computation failed assuming positive semidefiniteness of a constructed matrix. '
                 'Applying default "sym" (symmetric) matrix type instead of "pos" (positive-semidefinite).'
             )
             try:
                 result = linalg.solve(matrix, vec, assume_a='sym', overwrite_a=False)
-            except LinAlgError:
+            except linalg.LinAlgError:
                 logger.warning('Singular matrix in solving dual problem. Using least-squares solution instead.')
                 result = linalg.lstsq(matrix, vec)[0]
 
